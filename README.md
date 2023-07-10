@@ -40,12 +40,6 @@
 | H66K/H68K/H69K | istoreos-rockchip-rk35xx-hinlink_opc-h6xk-squashfs-combined.img.gz       |
 | T68M           | istoreos-rockchip-rk35xx-lyt_t68m-squashfs-combined.img.gz               |
 
-## x86 架构
-
-| 设备       | 包名称                                               |
-| ---------- | ---------------------------------------------------- |
-| X86-64     | istoreos-x86_64-generic-squashfs-combined.img.gz     |
-| X86-64-EFI | istoreos-x86_64-generic-squashfs-combined-efi.img.gz |
 
 ## 鸣谢
 
