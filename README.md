@@ -23,11 +23,11 @@
 
 | 设备       | 包名称                                                                    |
 | ---------- | ------------------------------------------------------------------------- |
-| R2S        | istoreos-rockchip-rk33xx-friendlyarm_nanopi-r2s-squashfs-combined.img.gz  |
-| R4S        | istoreos-rockchip-rk33xx-friendlyarm_nanopi-r4s-squashfs-combined.img.gz  |
-| R4SE       | istoreos-rockchip-rk33xx-friendlyarm_nanopi-r4se-squashfs-combined.img.gz |
-| ROCKPRO64  | istoreos-rockchip-rk33xx-pine64_rockpro64-squashfs-combined.img.gz        |
-| ROCK-PI-4A | istoreos-rockchip-rk33xx-radxa_rock-pi-squashfs-combined.img.gz           |
+| R2S        | istoreos-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz |
+| R4S        | istoreos-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz  |
+| R4SE       | istoreos-rockchip-armv8-friendlyarm_nanopi-r4se-squashfs-sysupgrade.img.gz |
+| ROCKPRO64  | istoreos-rockchip-armv8-pine64_rockpro64-squashfs-sysupgrade.img.gz        |
+| ROCK-PI-4A | istoreos-rockchip-armv8-radxa_rock-pi-squashfs-sysupgrade.img.gz           |
 
 ### RK35xx 架构
 
