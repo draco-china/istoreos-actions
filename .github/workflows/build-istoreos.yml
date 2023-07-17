@@ -201,6 +201,7 @@ jobs:
       with:
         retain_days: 1
         keep_minimum_runs: 5
+        token: ${{ secrets.DEPLOY_TOKEN }}
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
