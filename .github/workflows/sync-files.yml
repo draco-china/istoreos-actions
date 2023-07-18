@@ -18,8 +18,7 @@ jobs:
       fail-fast: false
 
     env:
-      device: ${{ if eq(matrix.ARCHITECTURE, 'rk33xx') }}r5s{{ else if eq(matrix.ARCHITECTURE, 'rk35xx') }}h6xk{{ else if eq(matrix.ARCHITECTURE, 'x86') }}x86_64_efi{{ endif }}
-
+      device: ${{ matrix.ARCHITECTURE == 'rk33xx' && 'r5s' || matrix.ARCHITECTURE == 'rk35xx' && 'h6xk' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
     steps:
 
     - name: Checkout code
