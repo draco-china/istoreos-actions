@@ -1,0 +1,49 @@
+name: Sync Files
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 15 * * *
+
+jobs:
+
+  sync:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ARCHITECTURE: [rk33xx, rk35xx, x86]
+      fail-fast: false
+
+    env:
+      device: ${{ if eq(matrix.ARCHITECTURE, 'rk33xx') }}r5s{{ else if eq(matrix.ARCHITECTURE, 'rk35xx') }}h6xk{{ else if eq(matrix.ARCHITECTURE, 'x86') }}x86_64_efi{{ endif }}
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create architecture directories
+      run: |
+        mkdir -p ./${{ matrix.ARCHITECTURE }}
+
+    - name: Download files
+      run: |
+        curl -o ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
+        curl -o ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
+        curl -o ./${{ matrix.ARCHITECTURE }}/ota.footer.html https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/ota.footer.html
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Add files for ${{ matrix.ARCHITECTURE }}"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        github_token: ${{ secrets.DEPLOY_TOKEN }}
