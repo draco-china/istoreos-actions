@@ -20,17 +20,17 @@ jobs:
 
     - name: Download files
       run: |
-        curl -o ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r5s/feeds.conf
-        curl -o ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r5s/config.buildinfo
-        curl -o ./rk33xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/r5s/ota.footer.html
+        wget -O  ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r5s/feeds.conf
+        wget -O  ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r5s/config.buildinfo
+        wget -O ./rk33xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/r5s/ota.footer.html
         
-        curl -o ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h6xk/feeds.conf
-        curl -o ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h6xk/config.buildinfo
-        curl -o ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h6xk/ota.footer.html
+        wget -O ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h6xk/feeds.conf
+        wget -O ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h6xk/config.buildinfo
+        wget -O ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h6xk/ota.footer.html
         
-        curl -o ./x86/feeds.conf https://fw0.koolcenter.com/iStoreOS/x86_64_efi/feeds.conf
-        curl -o ./x86/.config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.buildinfo
-        curl -o ./x86/ota.footer.html https://fw0.koolcenter.com/iStoreOS/x86_64_efi/ota.footer.html
+        wget -O ./x86/feeds.conf https://fw0.koolcenter.com/iStoreOS/x86_64_efi/feeds.conf
+        wget -O ./x86/.config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.buildinfo
+        wget -O ./x86/ota.footer.html https://fw0.koolcenter.com/iStoreOS/x86_64_efi/ota.footer.html
 
     - name: Push changes
       uses: peaceiris/actions-gh-pages@v3
