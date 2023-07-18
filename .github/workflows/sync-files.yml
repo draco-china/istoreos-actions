@@ -11,28 +11,27 @@ jobs:
   sync:
 
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        ARCHITECTURE: [rk33xx, rk35xx, x86]
-      fail-fast: false
-
     env:
-      device: ${{ matrix.ARCHITECTURE == 'rk33xx' && 'r5s' || matrix.ARCHITECTURE == 'rk35xx' && 'h6xk' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
+      ARCHITECTURE:
+        -rk33xx
+        -rk35xx
+        -x86
+
     steps:
 
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Create architecture directories
-      run: |
-        mkdir -p ./${{ matrix.ARCHITECTURE }}
-
+      
     - name: Download files
       run: |
-        curl -o ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
-        curl -o ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
-        curl -o ./${{ matrix.ARCHITECTURE }}/ota.footer.html https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/ota.footer.html
+        for arch in "${{ env.ARCHITECTURE }}"
+        do
+          device="${{ if eq(arch, 'rk33xx') }}r5s{{ else if eq(arch, 'rk35xx') }}h6xk{{ else if eq(arch, 'x86') }}x86_64{{ endif }}"
+
+          curl -o ./$arch/feeds.conf https://fw0.koolcenter.com/iStoreOS/$device/feeds.conf
+          curl -o ./$arch/.config https://fw0.koolcenter.com/iStoreOS/$device/config.buildinfo
+          curl -o ./$arch/ota.footer.html https://fw0.koolcenter.com/iStoreOS/$device/ota.footer.html
+        done
 
     - name: Push changes
       uses: peaceiris/actions-gh-pages@v3
