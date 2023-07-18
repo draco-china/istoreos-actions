@@ -15,6 +15,7 @@ env:
   # REPO_BRANCH: main
   FEEDS_CONF: feeds.conf
   CONFIG_FILE: .config
+  OTA_FOOTER: ota.footer.html
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: true
@@ -93,6 +94,12 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
+      
+    - name: Load custom ota
+      env:
+        OTA_FOOTER_PATH: ${{ matrix.ARCHITECTURE }}/${{ env.OTA_FOOTER }}
+      run: |
+        [ -e $OTA_FOOTER_PATH ] && mv $OTA_FOOTER_PATH openwrt/$OTA_FOOTER
 
     - name: Load custom configuration
       env:
