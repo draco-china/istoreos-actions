@@ -28,11 +28,14 @@ jobs:
     - name: Create architecture directories
       run: |
         mkdir -p ./${{ matrix.ARCHITECTURE }}
+
     - name: Download files
       run: |
+        git pull
         curl -o ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
         curl -o ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
         curl -o ./${{ matrix.ARCHITECTURE }}/ota.footer.html https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/ota.footer.html
+
     - name: Push changes
       uses: peaceiris/actions-gh-pages@v3
       with:
