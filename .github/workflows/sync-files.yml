@@ -1,3 +1,4 @@
+
 name: Sync Files
 
 on:
@@ -11,28 +12,27 @@ jobs:
   sync:
 
     runs-on: ubuntu-latest
-    env:
-      ARCHITECTURES: |
-        rk33xx
-        rk35xx
-        x86
 
+    strategy:
+      matrix:
+        ARCHITECTURE: [rk33xx, rk35xx, x86]
+      fail-fast: false
+
+    env:
+      device: ${{ matrix.ARCHITECTURE == 'rk33xx' && 'r5s' || matrix.ARCHITECTURE == 'rk35xx' && 'h6xk' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
     steps:
 
     - name: Checkout code
       uses: actions/checkout@v2
-      
+
+    - name: Create architecture directories
+      run: |
+        mkdir -p ./${{ matrix.ARCHITECTURE }}
     - name: Download files
       run: |
-        for arch in ${{ env.ARCHITECTURES }}
-        do
-          device=${{ arch == 'rk33xx' && 'r5s' || arch == 'rk35xx' && 'h6xk' || arch == 'x86' && 'x86_64' }}
-          
-          curl -o ./$arch/feeds.conf https://fw0.koolcenter.com/iStoreOS/$device/feeds.conf
-          curl -o ./$arch/.config https://fw0.koolcenter.com/iStoreOS/$device/config.buildinfo
-          curl -o ./$arch/ota.footer.html https://fw0.koolcenter.com/iStoreOS/$device/ota.footer.html
-        done
-
+        curl -o ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
+        curl -o ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
+        curl -o ./${{ matrix.ARCHITECTURE }}/ota.footer.html https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/ota.footer.html
     - name: Push changes
       uses: peaceiris/actions-gh-pages@v3
       with:
@@ -43,7 +43,7 @@ jobs:
         user_email: 'github-actions[bot]@github.com'
         exclude_assets: ''
         keep_files: true
-        commit_message: "Sync files"
+        commit_message: "Sync files for ${{ matrix.ARCHITECTURE }}"
   
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
