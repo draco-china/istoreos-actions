@@ -26,7 +26,7 @@ jobs:
       run: |
         for arch in "${{ env.ARCHITECTURE }}"
         do
-          device: ${{ arch == 'rk33xx' && 'r5s' || arch == 'rk35xx' && 'h6xk' || arch == 'x86' && 'x86_64' }}
+          device: ${{ matrix.arch == 'rk33xx' && 'r5s' || matrix.arch == 'rk35xx' && 'h6xk' || matrix.arch == 'x86' && 'x86_64' }}
 
           curl -o ./$arch/feeds.conf https://fw0.koolcenter.com/iStoreOS/$device/feeds.conf
           curl -o ./$arch/.config https://fw0.koolcenter.com/iStoreOS/$device/config.buildinfo
@@ -43,7 +43,7 @@ jobs:
         user_email: 'github-actions[bot]@github.com'
         exclude_assets: ''
         keep_files: true
-        commit_message: "Add files for ${{ matrix.ARCHITECTURE }}"
+        commit_message: "Sync files"
   
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
