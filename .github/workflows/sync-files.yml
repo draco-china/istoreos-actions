@@ -26,7 +26,7 @@ jobs:
       run: |
         for arch in "${{ env.ARCHITECTURE }}"
         do
-          device="${{ if eq(arch, 'rk33xx') }}r5s{{ else if eq(arch, 'rk35xx') }}h6xk{{ else if eq(arch, 'x86') }}x86_64{{ endif }}"
+          device: ${{ arch == 'rk33xx' && 'r5s' || arch == 'rk35xx' && 'h6xk' || arch == 'x86' && 'x86_64' }}
 
           curl -o ./$arch/feeds.conf https://fw0.koolcenter.com/iStoreOS/$device/feeds.conf
           curl -o ./$arch/.config https://fw0.koolcenter.com/iStoreOS/$device/config.buildinfo
