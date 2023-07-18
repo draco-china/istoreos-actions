@@ -34,15 +34,20 @@ jobs:
         curl -o ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
         curl -o ./${{ matrix.ARCHITECTURE }}/ota.footer.html https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/ota.footer.html
 
-    - name: Commit changes
-      run: |
-        git config --local user.email "github-actions[bot]@github.com"
-        git config --local user.name "GitHub Action"
-        git add .
-        git commit -m "Add files for ${{ matrix.ARCHITECTURE }}"
-
     - name: Push changes
-      uses: ad-m/github-push-action@master
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        branch: main
-        github_token: ${{ secrets.DEPLOY_TOKEN }}
+        personal_token: ${{ secrets.DEPLOY_TOKEN }}
+        publish_branch: main
+        publish_dir: ./
+        user_name: 'GitHub Action'
+        user_email: 'github-actions[bot]@github.com'
+        exclude_assets: ''
+        keep_files: true
+        commit_message: "Add files for ${{ matrix.ARCHITECTURE }}"
+  
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 1
+        keep_minimum_runs: 1
