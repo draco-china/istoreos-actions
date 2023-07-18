@@ -8,20 +8,9 @@ on:
     - cron: 0 15 * * *
 
 jobs:
-
   sync:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        ARCHITECTURE: [rk33xx, rk35xx, x86]
-      fail-fast: false
-
-    env:
-      device: ${{ matrix.ARCHITECTURE == 'rk33xx' && 'r5s' || matrix.ARCHITECTURE == 'rk35xx' && 'h6xk' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
     steps:
-
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -31,10 +20,17 @@ jobs:
 
     - name: Download files
       run: |
-        git pull
-        curl -o ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
-        curl -o ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
-        curl -o ./${{ matrix.ARCHITECTURE }}/ota.footer.html https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/ota.footer.html
+        curl -o ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r5s/feeds.conf
+        curl -o ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r5s/config.buildinfo
+        curl -o ./rk33xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/r5s/ota.footer.html
+        
+        curl -o ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h6xk/feeds.conf
+        curl -o ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h6xk/config.buildinfo
+        curl -o ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h6xk/ota.footer.html
+        
+        curl -o ./x86/feeds.conf https://fw0.koolcenter.com/iStoreOS/x86_64_efi/feeds.conf
+        curl -o ./x86/.config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.buildinfo
+        curl -o ./x86/ota.footer.html https://fw0.koolcenter.com/iStoreOS/x86_64_efi/ota.footer.html
 
     - name: Push changes
       uses: peaceiris/actions-gh-pages@v3
@@ -46,7 +42,7 @@ jobs:
         user_email: 'github-actions[bot]@github.com'
         exclude_assets: ''
         keep_files: true
-        commit_message: "Sync files for ${{ matrix.ARCHITECTURE }}"
+        commit_message: "Sync files"
   
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
