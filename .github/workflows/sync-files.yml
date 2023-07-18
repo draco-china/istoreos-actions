@@ -12,7 +12,10 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      ARCHITECTURES: 'rk33xx,rk35xx,x86'
+      ARCHITECTURES: |
+        rk33xx
+        rk35xx
+        x86
 
     steps:
 
@@ -21,10 +24,9 @@ jobs:
       
     - name: Download files
       run: |
-        archs=(${{ env.ARCHITECTURES }})
-        for arch in ${archs[@]}
+        for arch in ${{ env.ARCHITECTURES }}
         do
-          device=${{ matrix.arch == 'rk33xx' && 'r5s' || matrix.arch == 'rk35xx' && 'h6xk' || matrix.arch == 'x86' && 'x86_64' }}
+          device=${{ arch == 'rk33xx' && 'r5s' || arch == 'rk35xx' && 'h6xk' || arch == 'x86' && 'x86_64' }}
           
           curl -o ./$arch/feeds.conf https://fw0.koolcenter.com/iStoreOS/$device/feeds.conf
           curl -o ./$arch/.config https://fw0.koolcenter.com/iStoreOS/$device/config.buildinfo
