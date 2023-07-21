@@ -35,7 +35,7 @@ jobs:
     - name: Push changes
       uses: peaceiris/actions-gh-pages@v3
       with:
-        personal_token: ${{ secrets.DEPLOY_TOKEN }}
+        personal_token: ${{ secrets.ACCESS_TOKEN }}
         publish_branch: main
         publish_dir: ./
         user_name: 'GitHub Action'
@@ -49,4 +49,4 @@ jobs:
       with:
         retain_days: 1
         keep_minimum_runs: 1
-        token: ${{ secrets.DEPLOY_TOKEN }}
+        token: ${{ secrets.ACCESS_TOKEN }}
