@@ -1,4 +1,4 @@
-# iStore OS 固件
+# iStore OS 固件 | 想自己定制的麻烦 fork 或者 star | 用爱发电不易，谢谢理解
 
 [![iStore使用文档](https://img.shields.io/badge/使用文档-iStore%20OS-brightgreen?style=flat-square)](https://doc.linkease.com/zh/guide/istoreos) [![最新固件下载](https://img.shields.io/github/v/release/draco-china/istoreos-rk35xx-actions?style=flat-square&label=最新固件下载)](../../releases/latest)
 
@@ -40,6 +40,12 @@
 | H66K/H68K/H69K | istoreos-rockchip-rk35xx-hinlink_opc-h6xk-squashfs-combined.img.gz       |
 | T68M           | istoreos-rockchip-rk35xx-lyt_t68m-squashfs-combined.img.gz               |
 
+## x86 架构
+
+| 设备       | 包名称                                               |
+| ---------- | ---------------------------------------------------- |
+| X86-64     | istoreos-x86-64-generic-squashfs-combined.img.gz     |
+| X86-64-EFI | storeos-x86-64-generic-squashfs-combined-efi.img.gz  |
 
 ## 鸣谢
 
