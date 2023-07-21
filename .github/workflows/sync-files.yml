@@ -20,9 +20,9 @@ jobs:
 
     - name: Download files
       run: |
-        wget -O  ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r5s/feeds.conf
-        wget -O  ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r5s/config.buildinfo
-        wget -O ./rk33xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/r5s/ota.footer.html
+        wget -O  ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r2s/feeds.conf
+        wget -O  ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r2s/config.buildinfo
+        wget -O ./rk33xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/r2s/ota.footer.html
         
         wget -O ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h6xk/feeds.conf
         wget -O ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h6xk/config.buildinfo
