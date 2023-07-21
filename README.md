@@ -1,10 +1,10 @@
-# iStore OS 固件 | 想自己定制的麻烦 fork 或者 star | 用爱发电不易，谢谢理解
+# iStore OS 固件 
+
+## 想自己定制的麻烦 fork 或者 star | 用爱发电不易，谢谢理解
 
 [![iStore使用文档](https://img.shields.io/badge/使用文档-iStore%20OS-brightgreen?style=flat-square)](https://doc.linkease.com/zh/guide/istoreos) [![最新固件下载](https://img.shields.io/github/v/release/draco-china/istoreos-rk35xx-actions?style=flat-square&label=最新固件下载)](../../releases/latest)
 
-![支持设备](https://img.shields.io/badge/支持设备:-blueviolet.svg?style=flat-square) ![H66K](https://img.shields.io/badge/H66K-blue.svg?style=flat-square) ![H68K](https://img.shields.io/badge/H68K-blue.svg?style=flat-square) ![H69K](https://img.shields.io/badge/H69K-blue.svg?style=flat-square) ![R5S](https://img.shields.io/badge/R5S-blue.svg?style=flat-square) ![R6S](https://img.shields.io/badge/R6S-blue.svg?style=flat-square) ![R66S](https://img.shields.io/badge/R66S-blue.svg?style=flat-square) ![R68S](https://img.shields.io/badge/R68S-blue.svg?style=flat-square) ![STATION P2](https://img.shields.io/badge/STATION%20P2-blue.svg?style=flat-square) ![T68M](https://img.shields.io/badge/T68M-blue.svg?style=flat-square)
-
-![设备选购](https://img.shields.io/badge/设备选购:-blueviolet.svg?style=flat-square) [![H66K](https://img.shields.io/badge/购买-H66K-blue.svg?style=flat-square)](https://item.taobao.com/item.htm?spm=a21n57.1.0.0.3346523cAcg3qM&id=719159534058&ns=1&abbucket=0#detail) [![H68K](https://img.shields.io/badge/购买-H68K-blue.svg?style=flat-square)](https://item.taobao.com/item.htm?spm=a21n57.1.0.0.3346523cAcg3qM&id=702787603594&ns=1&abbucket=0#detail) [![H69K](https://img.shields.io/badge/购买-H69K-blue.svg?style=flat-square)](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-18501209652.51.69f86953zohktR&id=724801239256) [![H69K](https://img.shields.io/badge/购买-H66K/H68K/H69K%20配件-blue.svg?style=flat-square)](https://item.taobao.com/item.htm?spm=a1z10.5-c-s.w4002-18501209660.12.59f810054ljroP&id=700279146610)
+![支持设备](https://img.shields.io/badge/支持设备:-blueviolet.svg?style=flat-square) ![H88K](https://img.shields.io/badge/H88K-blue.svg?style=flat-square) ![H66K](https://img.shields.io/badge/H66K-blue.svg?style=flat-square) ![H68K](https://img.shields.io/badge/H68K-blue.svg?style=flat-square) ![H69K](https://img.shields.io/badge/H69K-blue.svg?style=flat-square) ![R5S](https://img.shields.io/badge/R5S-blue.svg?style=flat-square) ![R6S](https://img.shields.io/badge/R6S-blue.svg?style=flat-square) ![R66S](https://img.shields.io/badge/R66S-blue.svg?style=flat-square) ![R68S](https://img.shields.io/badge/R68S-blue.svg?style=flat-square) ![STATION P2](https://img.shields.io/badge/STATION%20P2-blue.svg?style=flat-square) ![T68M](https://img.shields.io/badge/T68M-blue.svg?style=flat-square)
 
 ## 默认配置
 
