@@ -55,11 +55,10 @@ jobs:
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
-        version: ${{ matrix.os == 'ubuntu-20.04' && '2004' || matrix.os == 'ubuntu-22.04' && '2204' || 'unknown' }}
       run: |
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
-        sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/draco-china/istoreos-actions/main/depends-ubuntu-${{ env.version }})
+        sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/draco-china/istoreos-actions/main/depends/${{ matrix.os }})
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
