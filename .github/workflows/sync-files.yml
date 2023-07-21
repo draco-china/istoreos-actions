@@ -26,7 +26,7 @@ jobs:
 
         wget -O ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h88k/feeds.conf
         wget -O ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h88k/config.buildinfo
-        wget -O ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h8xk/ota.footer.html
+        wget -O ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h6xk/ota.footer.html
 
         wget -O ./x86/feeds.conf https://fw0.koolcenter.com/iStoreOS/x86_64_efi/feeds.conf
         wget -O ./x86/.config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.buildinfo
