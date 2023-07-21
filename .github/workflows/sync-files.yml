@@ -23,11 +23,11 @@ jobs:
         wget -O  ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r2s/feeds.conf
         wget -O  ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r2s/config.buildinfo
         wget -O ./rk33xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/r2s/ota.footer.html
-        
-        wget -O ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h6xk/feeds.conf
-        wget -O ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h6xk/config.buildinfo
-        wget -O ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h6xk/ota.footer.html
-        
+
+        wget -O ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h88k/feeds.conf
+        wget -O ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h88k/config.buildinfo
+        wget -O ./rk35xx/ota.footer.html https://fw0.koolcenter.com/iStoreOS/h8xk/ota.footer.html
+
         wget -O ./x86/feeds.conf https://fw0.koolcenter.com/iStoreOS/x86_64_efi/feeds.conf
         wget -O ./x86/.config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.buildinfo
         wget -O ./x86/ota.footer.html https://fw0.koolcenter.com/iStoreOS/x86_64_efi/ota.footer.html
@@ -43,7 +43,7 @@ jobs:
         exclude_assets: ''
         keep_files: true
         commit_message: "Sync files"
-  
+
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
