@@ -4,7 +4,7 @@ on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: 0 15 * * *
+    - cron: 55 15 * * *
 
 jobs:
   sync:
