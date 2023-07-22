@@ -36,15 +36,15 @@ jobs:
           # - istoreos-21.02
           - istoreos-22.03
         ARCHITECTURE:
-          - rk33xx
+          # - rk33xx
           - rk35xx
         os:
           - ubuntu-20.04
 
-        include:
-          - REPO_BRANCH: istoreos-22.03
-            ARCHITECTURE: x86
-            os: ubuntu-22.04
+        # include:
+        #   - REPO_BRANCH: istoreos-22.03
+        #     ARCHITECTURE: x86
+        #     os: ubuntu-22.04
 
       fail-fast: false
 
