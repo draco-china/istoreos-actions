@@ -1,4 +1,4 @@
-name: Build iStore OS For Bbuntu 22.04
+name: Build iStore OS For Ubuntu 22.04
 
 on:
   repository_dispatch:
