@@ -1,4 +1,4 @@
-name: Build iStore OS for RK33XX Test
+name: Build iStore OS for RK35XX Test
 
 on:
   repository_dispatch:
