@@ -107,14 +107,6 @@ jobs:
         echo "------------------------------- 磁盘详情 -------------------------------\n"
         df -Th
 
-    - name: 下载架构编译配置文件
-      env:
-        device: ${{ matrix.ARCHITECTURE && matrix.ARCHITECTURE == 'rk33xx' && 'r2s' || matrix.ARCHITECTURE == 'rk35xx' && 'h88k' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
-      run: |
-        mkdir -p ./${{ matrix.ARCHITECTURE }}
-        wget -O  ./${{ matrix.ARCHITECTURE }}/${{ env.FEEDS_CONF }} https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
-        wget -O  ./${{ matrix.ARCHITECTURE }}/${{ env.CONFIG_FILE }} https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
-
     - name: 克隆源码
       working-directory: /workdir
       run: |
@@ -123,6 +115,7 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
     - name: 加载自定义 feeds
+      working-directory: /workdir
       env:
         FEEDS_CONF_PATH: ${{ matrix.ARCHITECTURE }}/${{ env.FEEDS_CONF }}
       run: |
