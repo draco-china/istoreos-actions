@@ -65,9 +65,9 @@ jobs:
         sudo chown $USER:$GROUPS /workdir
 
 
-        - name: Create architecture directories
-        run: |
-          mkdir -p ./${{ matrix.ARCHITECTURE }}
+    - name: Create architecture directories
+      run: |
+        mkdir -p ./${{ matrix.ARCHITECTURE }}
 
     - name: Download Config files
       env:
