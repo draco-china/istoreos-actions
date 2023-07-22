@@ -81,6 +81,7 @@ jobs:
         sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/draco-china/istoreos-actions/main/depends/${{ matrix.os }})
         wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
         sudo python2.7 get-pip.py
+        sudo rm -rf get-pip.py
         sudo pip install pyelftools
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
