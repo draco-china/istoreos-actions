@@ -15,7 +15,6 @@ env:
   # REPO_BRANCH: main
   FEEDS_CONF: feeds.conf
   CONFIG_FILE: .config
-  OTA_FOOTER: ota.footer.html
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: true
@@ -65,6 +64,30 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
 
+
+        - name: Create architecture directories
+        run: |
+          mkdir -p ./${{ matrix.ARCHITECTURE }}
+
+    - name: Download Config files
+      env:
+        device: ${{ matrix.ARCHITECTURE && matrix.ARCHITECTURE == 'rk33xx' && 'r2s' || matrix.ARCHITECTURE == 'rk35xx' && 'h88k' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
+      run: |
+        wget -O  ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
+        wget -O  ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
+
+    - name: Push changes
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        personal_token: ${{ env.GITHUB_TOKEN }}
+        publish_branch: main
+        publish_dir: ./
+        user_name: 'GitHub Action'
+        user_email: 'github-actions[bot]@github.com'
+        exclude_assets: ''
+        keep_files: true
+        commit_message: "Sync files"
+
     - name: Clone source code
       working-directory: /workdir
       run: |
@@ -93,12 +116,6 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
-
-    - name: Load custom ota
-      env:
-        OTA_FOOTER_PATH: ${{ matrix.ARCHITECTURE }}/${{ env.OTA_FOOTER }}
-      run: |
-        [ -e $OTA_FOOTER_PATH ] && mv $OTA_FOOTER_PATH openwrt/$OTA_FOOTER
 
     - name: Load custom configuration
       env:
@@ -215,9 +232,8 @@ jobs:
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 1
         keep_minimum_runs: 5
-        token: ${{ secrets.ACCESS_TOKEN }}
+        token: ${{ env.GITHUB_TOKEN }}
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
