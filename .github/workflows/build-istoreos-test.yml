@@ -42,27 +42,6 @@ jobs:
     steps:
     - name: 准备完成
       uses: actions/checkout@main
-
-    - name: 初始化编译环境
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-        sudo -E apt-get -qq update
-        sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/draco-china/istoreos-actions/main/depends/${{ matrix.os }})
-        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
-        sudo python2.7 get-pip.py
-        sudo rm -rf get-pip.py
-        sudo pip install pyelftools
-        sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
-        echo "------------------------------- 释放磁盘空间 -------------------------------"
-        sudo -E apt-get -q purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-        sudo -E apt-get -qq autoremove --purge
-        sudo -E apt-get -qq clean
-        docker image prune -a -f
-
     - name: 检查服务器配置
       run: |
         echo "若分配的服务器性能不足，务必及时取消，重新运行！"
@@ -77,6 +56,26 @@ jobs:
         echo -e "磁盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l) \n"
         echo "------------------------------- 磁盘详情 -------------------------------\n"
         df -Th
+
+    - name: 初始化编译环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/draco-china/istoreos-actions/main/depends/${{ matrix.os }})
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        sudo python2.7 get-pip.py
+        sudo rm -rf get-pip.py
+        sudo pip install pyelftools
+        echo "------------------------------- 释放磁盘空间 -------------------------------"
+        sudo -E apt-get -q purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        docker image prune -a -f
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
 
     - name: 克隆源码
       working-directory: /workdir
