@@ -1,4 +1,4 @@
-name: Build iStore OS
+name: Build iStore OS for ubuntu-22.04 Test
 
 on:
   repository_dispatch:
@@ -17,11 +17,11 @@ env:
   CONFIG_FILE: .config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
-  UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: false
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
-  UPLOAD_RELEASE: false
+  UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
@@ -37,9 +37,13 @@ jobs:
         ARCHITECTURE:
           - rk33xx
           - rk35xx
-          # - x86
         os:
           - ubuntu-22.04
+
+        # include:
+        #   - REPO_BRANCH: istoreos-22.03
+        #     ARCHITECTURE: x86
+        #     os: ubuntu-22.04
 
       fail-fast: false
 
