@@ -52,7 +52,9 @@ jobs:
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
         gettext git libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev \
-        file wget python2.7 python-pip
+        file wget python2.7
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        sudo python2.7 get-pip.py
         sudo pip install pyelftools
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
