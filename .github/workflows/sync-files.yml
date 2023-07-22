@@ -10,20 +10,20 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: 准备完成
       uses: actions/checkout@v2
 
     - name: 下载架构编译配置文件
       run: |
-        mkdir -p ./${{ matrix.ARCHITECTURE }}
-    - name: Download files
-      run: |
+        mkdir -p ./rk33xx
         wget -O  ./rk33xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/r2s/feeds.conf
         wget -O  ./rk33xx/.config https://fw0.koolcenter.com/iStoreOS/r2s/config.buildinfo
 
+        mkdir -p ./rk35xx
         wget -O ./rk35xx/feeds.conf https://fw0.koolcenter.com/iStoreOS/h88k/feeds.conf
         wget -O ./rk35xx/.config https://fw0.koolcenter.com/iStoreOS/h88k/config.buildinfo
 
+        mkdir -p ./x86
         wget -O ./x86/feeds.conf https://fw0.koolcenter.com/iStoreOS/x86_64_efi/feeds.conf
         wget -O ./x86/.config https://fw0.koolcenter.com/iStoreOS/x86_64_efi/config.buildinfo
 
@@ -39,7 +39,7 @@ jobs:
         keep_files: true
         commit_message: "Sync files"
 
-    - name: Delete workflow runs
+    - name: 删除运行记录
       uses: GitRML/delete-workflow-runs@main
       with:
         keep_minimum_runs: 1
