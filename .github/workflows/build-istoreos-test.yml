@@ -112,8 +112,8 @@ jobs:
         device: ${{ matrix.ARCHITECTURE && matrix.ARCHITECTURE == 'rk33xx' && 'r2s' || matrix.ARCHITECTURE == 'rk35xx' && 'h88k' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
       run: |
         mkdir -p ./${{ matrix.ARCHITECTURE }}
-        wget -O  ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
-        wget -O  ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
+        wget -O  ./${{ matrix.ARCHITECTURE }}/${{ env.FEEDS_CONF }} https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
+        wget -O  ./${{ matrix.ARCHITECTURE }}/${{ env.CONFIG_FILE }} https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
 
     - name: 同步编译配置文件
       uses: peaceiris/actions-gh-pages@v3
