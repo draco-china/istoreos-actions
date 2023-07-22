@@ -91,7 +91,7 @@ jobs:
         echo -e "\n"
         echo "------------------------------- 磁盘信息 -------------------------------"
         echo -e "磁盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l) \n"
-        echo "磁盘详情: "
+        echo "------------------------------- 磁盘详情 -------------------------------"
         df -Th
 
     - name: 初始化编译环境
@@ -104,12 +104,13 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
-        echo "释放磁盘空间"
-        sudo rm -rf /usr/share/dotnet
+        echo "------------------------------- 释放磁盘空间 -------------------------------"
+        docker image prune -a -f
         sudo -E apt-get -q purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
-        docker image prune -a -f
+        echo "------------------------------- 磁盘详情 -------------------------------"
+        df -Th
 
     - name: 下载架构编译配置文件
       env:
