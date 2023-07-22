@@ -115,18 +115,6 @@ jobs:
         wget -O  ./${{ matrix.ARCHITECTURE }}/${{ env.FEEDS_CONF }} https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
         wget -O  ./${{ matrix.ARCHITECTURE }}/${{ env.CONFIG_FILE }} https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
 
-    - name: 同步编译配置文件
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        personal_token: ${{ env.GITHUB_TOKEN }}
-        publish_branch: main
-        publish_dir: ./
-        user_name: 'GitHub Action'
-        user_email: 'github-actions[bot]@github.com'
-        exclude_assets: ''
-        keep_files: true
-        commit_message: "Sync files"
-
     - name: 克隆源码
       working-directory: /workdir
       run: |
