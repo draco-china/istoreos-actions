@@ -1,4 +1,4 @@
-name: Build iStore OS for RK3XXX Test
+name: Build iStore OS For Bbuntu 22.04
 
 on:
   repository_dispatch:
@@ -19,8 +19,6 @@ env:
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: false
-  UPLOAD_COWTRANSFER: false
-  UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -35,16 +33,46 @@ jobs:
         ARCHITECTURE:
           - rk33xx
           - rk35xx
+          - x86
         os:
           - ubuntu-22.04
 
       fail-fast: false
 
     steps:
-    - name: Checkout
+    - name: 准备完成
       uses: actions/checkout@main
 
-    - name: Initialization environment
+    - name: 合并磁盘
+      run: |
+        sudo swapoff -a
+        sudo rm -f /mnt/swapfile
+        export ROOT_FREE_KB=$(df --block-size=1024 --output=avail / | tail -1)
+        export ROOT_LOOP_KB=$(expr $ROOT_FREE_KB - 1048576)
+        export ROOT_LOOP_BYTES=$(expr $ROOT_LOOP_KB \* 1024)
+        sudo fallocate -l $ROOT_LOOP_BYTES /root.img
+        export ROOT_LOOP_DEVNAME=$(sudo losetup -Pf --show /root.img)
+        sudo pvcreate -f $ROOT_LOOP_DEVNAME
+        export MNT_FREE_KB=$(df --block-size=1024 --output=avail /mnt | tail -1)
+        export MNT_LOOP_KB=$(expr $MNT_FREE_KB - 102400)
+        export MNT_LOOP_BYTES=$(expr $MNT_LOOP_KB \* 1024)
+        sudo fallocate -l $MNT_LOOP_BYTES /mnt/mnt.img
+        export MNT_LOOP_DEVNAME=$(sudo losetup -Pf --show /mnt/mnt.img)
+        sudo pvcreate -f $MNT_LOOP_DEVNAME
+        sudo vgcreate vgstorage $ROOT_LOOP_DEVNAME $MNT_LOOP_DEVNAME
+        sudo lvcreate -n lvstorage -l 100%FREE vgstorage
+        export LV_DEVNAME=$(sudo lvscan | awk -F "'" '{print $2}')
+        sudo mkfs.btrfs -L combinedisk $LV_DEVNAME
+        sudo mount -o compress=zstd $LV_DEVNAME $GITHUB_WORKSPACE
+        sudo chown -R runner:runner $GITHUB_WORKSPACE
+        mkdir $GITHUB_WORKSPACE/tmp
+        chmod 777 $GITHUB_WORKSPACE/tmp
+        sudo cp -rp /tmp/* $GITHUB_WORKSPACE/tmp
+        sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
+        df -hT $GITHUB_WORKSPACE
+        sudo btrfs filesystem usage $GITHUB_WORKSPACE
+
+    - name: 初始化编译环境
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -54,25 +82,39 @@ jobs:
         wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
         sudo python2.7 get-pip.py
         sudo pip install pyelftools
-        sudo -E apt-get -qq autoremove --purge
-        sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
+        echo "------------------------------- 释放磁盘空间 -------------------------------"
+        sudo -E apt-get -q purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        docker image prune -a -f
 
-
-    - name: Create architecture directories
+    - name: 检查服务器配置
       run: |
-        mkdir -p ./${{ matrix.ARCHITECTURE }}
+        echo "若分配的服务器性能不足，务必及时取消，重新运行！"
+        echo -e "------------------------------- CPU信息 -------------------------------\n"
+        echo "CPU物理数量:$(cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l)"
+        echo -e "CPU核心及版本信息: $(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c) \n"
+        echo "------------------------------- 内存信息 -------------------------------\n"
+        echo "已安装内存详细信息: "
+        sudo lshw -short -C memory | grep GiB
+        echo -e "\n"
+        echo "------------------------------- 磁盘信息 -------------------------------\n"
+        echo -e "磁盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l) \n"
+        echo "------------------------------- 磁盘详情 -------------------------------\n"
+        df -Th
 
-    - name: Download Config files
+    - name: 下载架构编译配置文件
       env:
         device: ${{ matrix.ARCHITECTURE && matrix.ARCHITECTURE == 'rk33xx' && 'r2s' || matrix.ARCHITECTURE == 'rk35xx' && 'h88k' || matrix.ARCHITECTURE == 'x86' && 'x86_64_efi' }}
       run: |
+        mkdir -p ./${{ matrix.ARCHITECTURE }}
         wget -O  ./${{ matrix.ARCHITECTURE }}/feeds.conf https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/feeds.conf
         wget -O  ./${{ matrix.ARCHITECTURE }}/.config https://fw0.koolcenter.com/iStoreOS/${{ env.device }}/config.buildinfo
 
-    - name: Push changes
+    - name: 同步编译配置文件
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ env.GITHUB_TOKEN }}
@@ -84,21 +126,14 @@ jobs:
         keep_files: true
         commit_message: "Sync files"
 
-    - name: Clone source code
+    - name: 克隆源码
       working-directory: /workdir
       run: |
         df -hT $PWD
         git clone $REPO_URL -b ${{ matrix.REPO_BRANCH }} openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-    - name: Cache Build Action
-      uses: klever1988/cachewrtbuild@main
-      with:
-        ccache: 'true'
-        mixkey: ${{ matrix.os }}-${{ matrix.ARCHITECTURE }}-${{ matrix.REPO_BRANCH }}
-        prefix: ${{ github.workspace }}/openwrt
-
-    - name: Load custom feeds
+    - name: 加载自定义 feeds
       env:
         FEEDS_CONF_PATH: ${{ matrix.ARCHITECTURE }}/${{ env.FEEDS_CONF }}
       run: |
@@ -107,13 +142,13 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds
+    - name: 更新 feeds
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds
+    - name: 安装 feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration
+    - name: 加载自定义配置
       env:
         CONFIG_FILE_PATH: ${{ matrix.ARCHITECTURE }}/${{ env.CONFIG_FILE }}
       run: |
@@ -123,14 +158,14 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
-    - name: SSH connection to Actions
+    - name: SSH 连接到 Actions
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
       env:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-    - name: Download package
+    - name: 下载软件包
       id: package
       run: |
         cd openwrt
@@ -139,7 +174,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware
+    - name: 编译固件
       id: compile
       run: |
         cd openwrt
@@ -148,18 +183,18 @@ jobs:
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
         echo "::set-output name=status::success"
 
-    - name: Check space usage
+    - name: 检查磁盘空间
       if: (!cancelled())
       run: df -hT
 
-    - name: Upload bin directory
+    - name: 上传 bin 文件夹
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: OpenWrt_bin${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Organize files
+    - name: 整理固件文件
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
@@ -168,39 +203,19 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
 
-    - name: Upload firmware directory
+    - name: 上传固件目录
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: OpenWrt_firmware${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Upload firmware to cowtransfer
-      id: cowtransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
-        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
-        echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
-
-    - name: Upload firmware to WeTransfer
-      id: wetransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
-        echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-        echo "::set-output name=url::$(cat wetransfer.log | grep https | cut -f3 -d" ")"
-
-    - name: Generate release tag
+    - name: 生成发布标签
       id: tag
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H.%M")"
         touch release.txt
-        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
-        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "
         💻 架构: ${{ matrix.ARCHITECTURE }}
 
@@ -217,7 +232,7 @@ jobs:
         🔒 密码: password " >> release.txt
         echo "::set-output name=status::success"
 
-    - name: Upload firmware to release
+    - name: 自动发布固件到 Releases
       uses: softprops/action-gh-release@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
       with:
@@ -225,13 +240,13 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-    - name: Delete workflow runs
+    - name: 删除运行记录
       uses: GitRML/delete-workflow-runs@main
       with:
         keep_minimum_runs: 5
         token: ${{ env.GITHUB_TOKEN }}
 
-    - name: Remove old Releases
+    - name: 删除自动发布的旧固件
       uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
