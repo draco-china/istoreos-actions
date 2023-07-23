@@ -17,7 +17,16 @@
 # sed -i 's/OpenWrt/iStore OS/g' package/base-files/files/bin/config_generate
 
 # ttyd 自动登录
-# sed -i "s?/bin/login?/usr/libexec/login.sh?g" ${GITHUB_WORKSPACE}/openwrt/package/feeds/packages/ttyd/files/ttyd.config
+sed -i "s?/bin/login?/usr/libexec/login.sh?g" ${GITHUB_WORKSPACE}/openwrt/package/feeds/packages/ttyd/files/ttyd.config
+
+# Clone community packages to package/community
+mkdir package/community
+pushd package/community
+
+# Add extra wireless drivers
+svn co https://github.com/openwrt/openwrt/branches/openwrt-22.03/package/firmware
+svn co https://github.com/openwrt/openwrt/branches/openwrt-22.03/package/kernel
+popd
 
 # Enable AX210 driver and dependencies
 echo '
