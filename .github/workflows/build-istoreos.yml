@@ -36,13 +36,9 @@ jobs:
         ARCHITECTURE:
           - rk33xx
           - rk35xx
+          - x86
         os:
-          - ubuntu-20.04
-
-        include:
-          - REPO_BRANCH: istoreos-22.03
-            ARCHITECTURE: x86
-            os: ubuntu-22.04
+          - ubuntu-22.04
 
       fail-fast: false
 
@@ -73,6 +69,10 @@ jobs:
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/depends/${{ matrix.os }})
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        sudo python2.7 get-pip.py
+        sudo rm -rf get-pip.py
+        sudo pip install pyelftools
         echo "------------------------------- 清理Docker镜像和软件 -------------------------------"
         docker image prune -a -f
         sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php* mongodb* dotnet* moby* snapd* || true
