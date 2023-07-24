@@ -19,6 +19,15 @@
 # ttyd 自动登录
 # sed -i "s?/bin/login?/usr/libexec/login.sh?g" ${GITHUB_WORKSPACE}/openwrt/package/feeds/packages/ttyd/files/ttyd.config
 
+# Clone community packages to package/community
+mkdir package/community
+pushd package/community
+
+git clone --depth=1 -b openwrt_kiddin9 https://github.com/kiddin9/openwrt-packages
+
+popd
+
+
 # 添加自定义软件包
 echo '
 CONFIG_PACKAGE_luci-app-mosdns=y
