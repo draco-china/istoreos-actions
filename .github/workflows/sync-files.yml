@@ -42,5 +42,6 @@ jobs:
     - name: 删除运行记录
       uses: GitRML/delete-workflow-runs@main
       with:
+        retain_days: 1
         keep_minimum_runs: 1
         token: ${{ secrets.ACCESS_TOKEN }}
