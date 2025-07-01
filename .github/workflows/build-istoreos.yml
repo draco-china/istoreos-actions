@@ -31,7 +31,7 @@ jobs:
       matrix:
         REPO_BRANCH:
           # - main
-          - istoreos-22.03
+          - istoreos-24.10.0 
           # - istoreos-23.05
         ARCHITECTURE:
           - rk33xx
@@ -40,7 +40,7 @@ jobs:
         os:
           - ubuntu-22.04
         include:
-          - REPO_BRANCH: istoreos-23.05
+          - REPO_BRANCH: istoreos-24.10.0
             ARCHITECTURE: x86-alpha
             os: ubuntu-22.04
 
